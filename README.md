@@ -1,4 +1,4 @@
-# Projeto jupiter-restAssured#
+# Projeto jupiter-restAssured
 Este projeto tem como finalidade mostar parte do comhecimento do autor no uso do framwork para testes de APi REST Assured.
 
 A API testada é a "http://5d9cc58566d00400145c9ed4.mockapi.io", especificamente na rota "/shopping_cart"
