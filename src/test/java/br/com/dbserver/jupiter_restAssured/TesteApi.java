@@ -28,9 +28,6 @@ public class TesteApi {
 		String skuBEsperado = "demo_1";
 		String skuCEsperado = "demo_7";
 		
-		ResponseSpecBuilder builder = new ResponseSpecBuilder();
-		builder.expectStatusCode(200);
-
 		given()
 			.log().all()
 		.when()
@@ -113,9 +110,7 @@ public class TesteApi {
 			totalReal += Double.parseDouble(x);
 		}	
 		assertEquals(totalEsperado, totalReal, 0.01);		
-	}
-	
-	
+	}	
 	
 	@Test
 	public void verificarDadosPrimeiroItem() {
