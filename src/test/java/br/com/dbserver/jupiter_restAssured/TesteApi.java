@@ -1,35 +1,42 @@
 package br.com.dbserver.jupiter_restAssured;
 
-import static io.restassured.RestAssured.given;
-import static io.restassured.config.JsonConfig.jsonConfig;
-import static org.hamcrest.Matchers.closeTo;
+import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
-import static io.restassured.path.json.config.JsonPathConfig.NumberReturnType.*;
+import io.restassured.builder.ResponseSpecBuilder;
+
 
 public class TesteApi {
-
-	private static String URL = "http://5d9cc58566d00400145c9ed4.mockapi.io/shopping_cart";
 	private static int STATUS_OK = 200;
-	private static int STATUS_NOT_FOUND = 404;
+	
+	@BeforeEach
+	public void setup() {
+		RestAssured.baseURI = "http://5d9cc58566d00400145c9ed4.mockapi.io";
+	}
 
 	@Test
 	public void verificarSkuItensNocarrinho() {
 		String skuAEsperado = "demo_2";
 		String skuBEsperado = "demo_1";
 		String skuCEsperado = "demo_7";
+		
+		ResponseSpecBuilder builder = new ResponseSpecBuilder();
+		builder.expectStatusCode(200);
 
 		given()
+			.log().all()
 		.when()
-			.get(URL)
+			.get("/shopping_cart")
 		.then()
+			.statusCode(STATUS_OK)
 			.and() 
 			.statusCode(STATUS_OK)
 			.body("color", hasSize(3))
@@ -46,8 +53,8 @@ public class TesteApi {
 
 		given()
 		.when()
-			.get(URL)
-			.then()
+			.get("/shopping_cart")
+		.then()
 			.statusCode(STATUS_OK)
 			.body("color", hasSize(3))
 			.body("color[0]", is(corAEsperada))
@@ -63,7 +70,7 @@ public class TesteApi {
 
 		given()
 		.when()
-			.get(URL)
+			.get("/shopping_cart")
 		.then()
 			.statusCode(STATUS_OK)
 			.body("size", hasSize(3))
@@ -78,7 +85,7 @@ public class TesteApi {
 		double precoBEsperado = 16.51;
 		double precoCEsperado = 16.40;
 		
-		ArrayList<String> lista = given().when().get(URL).then().extract().path("price");	 
+		ArrayList<String> lista = given().when().get("/shopping_cart").then().extract().path("price");	 
 		
 		assertEquals(Double.parseDouble(lista.get(0)), precoAEsperado);
 		assertEquals(Double.parseDouble(lista.get(1)), precoBEsperado);
@@ -86,31 +93,29 @@ public class TesteApi {
 	}
 
 	@Test
-	public void verificarTaxaDeEnvio() {
-		double taxaEnvioEsperada = 2.00;
-		double taxaEnvioReal = Double.parseDouble(given().when().get(URL).then().extract().path("total_shipping"));	
-		assertEquals(taxaEnvioEsperada, taxaEnvioReal, 0.001);
+	public void verificarTaxaDeEnvio() {		
+		given()
+		.when()
+			.get("/shopping_cart")
+		.then()
+			.body("total_shipping as double", is(2.0));	
 	}
+	
+	
 
 	@Test
 	public void verificarValorTotal() {
 		double totalEsperado = 59.91f;		
-		
 		double totalReal = 0.0;		
-		ArrayList <String> list = given().when().get(URL).then().extract().path("price");
+		ArrayList <String> list = given().when().get("/shopping_cart").then().extract().path("price");
 		
 		for(String x: list ) {
 			totalReal += Double.parseDouble(x);
 		}	
-		assertEquals(totalEsperado, totalReal, 0.01);
-		
-//		given()
-//			.config(RestAssured.config().jsonConfig(jsonConfig().numberReturnType(BIG_DECIMAL)))
-//			.when()
-//			.get(URL)
-//		.then()
-//			.body("price.findAll{it as double != null}.sum()", is(closeTo(totalEsperado, 0.01)));
+		assertEquals(totalEsperado, totalReal, 0.01);		
 	}
+	
+	
 	
 	@Test
 	public void verificarDadosPrimeiroItem() {
@@ -121,8 +126,8 @@ public class TesteApi {
 
 		given()
 		.when()
-			.get(URL)
-			.then()
+			.get("/shopping_cart")
+		.then()
 			.statusCode(STATUS_OK)
 			.body("sku[0]",   is(skuEsperado))
 			.and()
@@ -142,8 +147,8 @@ public class TesteApi {
 
 		given()
 		.when()
-			.get(URL)
-			.then()
+			.get("/shopping_cart")
+		.then()
 			.statusCode(STATUS_OK)
 			.body("sku[1]",   is(skuEsperado))
 			.and()
@@ -163,8 +168,8 @@ public class TesteApi {
 
 		given()
 		.when()
-			.get(URL)
-			.then()
+			.get("/shopping_cart")
+		.then()
 			.statusCode(STATUS_OK)
 			.body("sku[2]",   is(skuEsperado))
 			.and()
@@ -181,8 +186,8 @@ public class TesteApi {
 
 		given()
 		.when()
-			.get(URL)
-			.then()
+			.get("/shopping_cart")
+		.then()
 			.statusCode(STATUS_OK)
 			.body("price.findAll{it != null}.max()", is(precoEsperado));
 	}
@@ -193,8 +198,8 @@ public class TesteApi {
 
 		given()
 		.when()
-			.get(URL)
-			.then()
+			.get("/shopping_cart")
+		.then()
 			.statusCode(STATUS_OK)
 			.body("price.findAll{it != null}.min()", is(precoEsperado));
 	}
