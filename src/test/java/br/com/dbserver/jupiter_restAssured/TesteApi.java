@@ -11,8 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
-import io.restassured.builder.ResponseSpecBuilder;
-
 
 public class TesteApi {
 	private static int STATUS_OK = 200;
