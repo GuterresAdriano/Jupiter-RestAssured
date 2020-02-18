@@ -94,6 +94,7 @@ public class TesteApi {
 			.get("/shopping_cart")
 		.then()
 			.body("total_shipping as double", is(2.0));	
+		
 	}
 	
 	
