@@ -96,7 +96,6 @@ public class TesteApi {
 			.body("total_shipping as double", is(2.0));			
 	}
 	
-	
 
 	@Test
 	public void verificarValorTotal() {
